@@ -76,12 +76,12 @@
 	
 	if [!repo_found!] neq [1] (
 		
-		echo Не удалось найти репозиторий. Выберите из существующих:
+		echo Can't find the repository. Choose from existing:
 		echo.
 		
 		set i=0
 		
-		rem Конфиги репов
+		rem Repo configs
 		
 		for /f "delims=" %%a in (!root_dir!config.ini) do (
 			
@@ -108,7 +108,7 @@
 			
 			set line=%%a
 			
-			rem Конфиг конкретного репозитория
+			rem Current repo config
 			
 			if "!line:~0,6!"=="[Repo " (
 				set /A i+=1
@@ -141,7 +141,7 @@
 		
 	)
 	
-	rem Настройки FTP из конфигов
+	rem FTP settings from configs
 	
 	for /f "delims=" %%a in (!root_dir!!repo_config_ftp_settings_file!) do (
 		
@@ -158,16 +158,16 @@
 		if ["!repo_config_ftp_dir:~0,1!"] neq ["/"] set repo_config_ftp_dir=/!repo_config_ftp_dir!
 		if ["!repo_config_ftp_dir:~-1,1!"]==["/"] set repo_config_ftp_dir=!repo_config_ftp_dir:~0,-1!
 		
-		if [!repo_id!]==[] ( rem Репозиторий найден в папке
+		if [!repo_id!]==[] ( rem Repo found in folder
 			
-			echo Найден репозиторий %repo_name%
+			echo Found repository %repo_name%
 			echo.
 			
 			cd !repo_dir!
 			
 			if [!mess!]==[] if [!options!] neq [--no-recursive] (
 				
-				echo Выберите комментарий из последних добавленных или нажмите Enter и введите новый
+				echo Choose summary from last added or press enter to add new:
 				echo.
 				
 				set i=0
@@ -199,7 +199,7 @@
 				if [!commit_id!]==[] (
 					
 					echo.
-					set /P mess=Введите комментарий: 
+					set /P mess=Input summary: 
 					echo.
 					
 				)
@@ -237,7 +237,7 @@
 			
 			set i=0
 			
-			rem Конфиг этого репозитория для деплоя на другие серверы
+			rem Current repo config to deploy to remote server
 			
 			for /f "delims=" %%a in (!root_dir!config.ini) do (
 				
@@ -255,7 +255,7 @@
 							
 							set repo_other_config_!i!_%%b=%%c
 							
-							rem Настройки FTP из конфигов
+							rem FTP settings from repos
 							
 							if ["%%b"]==["ftp_settings_file"] (
 								
@@ -281,7 +281,7 @@
 			
 			if [!repo_id!] neq [] if [!mess!]==[] (
 				
-				echo Введите абсолютный путь к файлу на FTP:
+				echo Input absolute path to a file on FTP:
 				echo.
 				set /P mess=
 				
@@ -301,7 +301,7 @@
 				
 			)
 			
-			rem Раскидываем конфиги для разных серверов для деплоя:
+			rem Split configs for several servers to deploy:
 			
 			if [!other_repo_found!]==[1] for /l %%i in (1,1,!i!) do (
 				
@@ -376,7 +376,7 @@
 				
 				if [!options!] neq [--no-recursive] if [!repo_config_ftp_empty_dirs!] neq [] (
 					
-					echo Очистить следующие папки [y/n]?
+					echo Clean this folders [y/n]?
 					echo.
 					
 					for /f "delims=," %%f in ("!repo_config_ftp_empty_dirs!") do (
@@ -436,7 +436,7 @@
 		if [!repo_config_other_repos!] neq [] if [!options!] neq [--no-recursive] (
 			
 			echo.
-			echo Обновить следующие репозитории [y/n]?
+			echo Update this repos [y/n]?
 			echo.
 			
 			for /d %%a in (!repo_config_other_repos!) do (
@@ -454,7 +454,7 @@
 			
 		)
 		
-	) else echo Не найден конфиг для текущего репозитория
+	) else echo Current repo config not found
 	
 	:readconfig
 	setlocal
